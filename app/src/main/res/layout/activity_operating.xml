@@ -8,75 +8,27 @@
 		tools:context=".OperatingActivity">
 
 	<TextView
-			android:id="@+id/xAcc_text"
+			android:id="@+id/Acc_text"
 			android:layout_width="0dp"
 	        android:layout_height="wrap_content"
-			app:layout_constraintTop_toBottomOf="@id/xMg_text"
+			app:layout_constraintTop_toBottomOf="@id/Mg_text"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toLeftOf="@id/yAcc_text"
-			android:text="AcX"
+			android:layout_marginLeft="@dimen/layout_margin"
+			android:text="Acc"
 			android:gravity="center_horizontal"
 
 	/>
 
 	<TextView
-			android:id="@+id/yAcc_text"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			app:layout_constraintTop_toBottomOf="@id/yMg_text"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintLeft_toRightOf="@id/xAcc_text"
-			app:layout_constraintRight_toLeftOf="@id/zAcc_text"
-			android:text="AcY"
-			android:gravity="center_horizontal"
-	/>
-
-	<TextView
-			android:id="@+id/zAcc_text"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			app:layout_constraintTop_toBottomOf="@id/zMg_text"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintLeft_toRightOf="@id/yAcc_text"
-			app:layout_constraintRight_toRightOf="parent"
-			android:text="AcZ"
-			android:gravity="center_horizontal"
-	/>
-
-	<TextView
-			android:id="@+id/xMg_text"
+			android:id="@+id/Mg_text"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@id/xAcc_text"
+			app:layout_constraintBottom_toTopOf="@id/Acc_text"
 			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toLeftOf="@id/yMg_text"
-			android:text="MgX"
-			android:gravity="center_horizontal"
-	/>
-
-	<TextView
-			android:id="@+id/yMg_text"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@id/yAcc_text"
-			app:layout_constraintLeft_toRightOf="@id/xMg_text"
-			app:layout_constraintRight_toLeftOf="@id/zMg_text"
-			android:text="MgY"
-			android:gravity="center_horizontal"
-	/>
-
-	<TextView
-			android:id="@+id/zMg_text"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@id/zAcc_text"
-			app:layout_constraintLeft_toRightOf="@id/yMg_text"
-			app:layout_constraintRight_toRightOf="parent"
-			android:text="MgZ"
+			android:layout_marginLeft="@dimen/layout_margin"
+			android:text="Mg"
 			android:gravity="center_horizontal"
 	/>
 
