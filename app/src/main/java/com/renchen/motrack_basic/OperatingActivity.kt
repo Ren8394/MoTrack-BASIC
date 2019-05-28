@@ -7,16 +7,13 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import android.support.v4.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_operating.*
-import java.util.logging.Logger
 
 class OperatingActivity: Activity(), SensorEventListener {
 
     private lateinit var mSensorManager: SensorManager
     private var mAccelerometer : Sensor ?= null
-    private var mMagnetometer : Sensor ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +21,13 @@ class OperatingActivity: Activity(), SensorEventListener {
 
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL)
-        mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_NORMAL)
+
+    }
+
+    private fun requestPermission() {
+        val fineLocationCheck : Int = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarseLocationCheck : Int = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
@@ -41,9 +42,27 @@ class OperatingActivity: Activity(), SensorEventListener {
 
         if (event.sensor == mAccelerometer) {
             Acc_text.text = sensorValues
+            positionTrack(event.values)
         }
-        if (event.sensor == mMagnetometer) {
-            Mg_text.text = sensorValues
-        }
+
     }
+
+    override fun onResume() {
+        super.onResume()
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mSensorManager.unregisterListener(this, mAccelerometer)
+    }
+
+    private fun positionTrack(value : FloatArray) {
+
+        if (value[2] >= 10.5) {
+            Acc_text.text = "GO GO GO"
+        }
+
+    }
+
 }
