@@ -92,13 +92,10 @@ class OperatingActivity: Activity(), SensorEventListener {
     }
 
     private fun startTracking(startTime: Long) {
-            if(accelerometerReading[2] >= (9.8 + 0.6)) {
+            if(accelerometerReading[2] >= (9.8 + 0.8)) {
                 var timeDifference: Long = System.currentTimeMillis() - startTime
                 var displacement: Float = accelerometerReading[0] * timeDifference
                 test_Text.text = "WOW"
-                Timer().schedule(1000) {
-
-                }
             } else {
                 test_Text.text = "OWO"
             }
