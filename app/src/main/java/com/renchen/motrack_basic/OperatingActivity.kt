@@ -6,9 +6,14 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.view.View
 import kotlinx.android.synthetic.main.activity_operating.*
+import java.security.KeyStore
+import java.util.*
+import kotlin.concurrent.schedule
 
 /*
 This class is an activity while operating position tracking.
@@ -30,11 +35,27 @@ class OperatingActivity: Activity(), SensorEventListener {
                                                                 Roll(2)    -> degrees of rotation about y axis
                                                              */
 
+    private var startTime:Long = System.currentTimeMillis()
+    private var startCheck: Boolean = true                   // Use to check weather the button is first click or not
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_operating)
 
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+        // Start position tracking while first click @startAndEnd_button button
+        startAndEnd_button.setOnClickListener {
+            if (startCheck) {
+                startAndEnd_button.text = "End"
+                startCheck = false
+                startTime = System.currentTimeMillis()    // Use to calculate the time difference during tacking
+            } else {
+                startCheck = true
+                startAndEnd_button.isClickable = false
+                test_Text.text = "DONE"
+            }
+        }
     }
 
     private fun requestPermission() {
@@ -51,10 +72,11 @@ class OperatingActivity: Activity(), SensorEventListener {
         // Get readings from accelerometer and magnetometer.
         if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
-            Acc_text.text = "WELL DONE"
+            if(!startCheck) {
+                startTracking(startTime)
+            }
         } else if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) {
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
-            Mg_text.text = "SUCCESSED"
         }
 
         // Update device's orientation
@@ -67,6 +89,19 @@ class OperatingActivity: Activity(), SensorEventListener {
         // Update rotation matrix, which is needed to update orientation angles.
         SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading)
         SensorManager.getOrientation(rotationMatrix, orientationAngles)
+    }
+
+    private fun startTracking(startTime: Long) {
+            if(accelerometerReading[2] >= (9.8 + 0.6)) {
+                var timeDifference: Long = System.currentTimeMillis() - startTime
+                var displacement: Float = accelerometerReading[0] * timeDifference
+                test_Text.text = "WOW"
+                Timer().schedule(1000) {
+
+                }
+            } else {
+                test_Text.text = "OWO"
+            }
     }
 
     override fun onResume() {
