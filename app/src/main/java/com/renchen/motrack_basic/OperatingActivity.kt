@@ -58,7 +58,7 @@ class OperatingActivity: Activity(), SensorEventListener {
 
     private var startCheck: Boolean = true                   // Use to check weather the button is first click or not
     private var startTime:Long = System.currentTimeMillis()  // T.0
-    private var startTheta = 0.0f                            // theta.
+    private var startTheta = -PI/2                           // theta.0
     private var startAzimuth = 0.0f
     private val stepLength = 0.8f
     private var stepCheck:Boolean = true
@@ -91,7 +91,7 @@ class OperatingActivity: Activity(), SensorEventListener {
         paint.strokeWidth = 3f
 
         paintPoint.setColor(Color.RED)
-        paintPoint.strokeWidth = 10f
+        paintPoint.strokeWidth = 15f
 
         startX = width/(2f)
         startY = height/(2f)
@@ -150,23 +150,23 @@ class OperatingActivity: Activity(), SensorEventListener {
             if (timestamp != 0L) {
                 var dt = (event.timestamp - timestamp) * NS2S
 
-                startTheta += gyroscopeReading[2] * dt           // theta = theta.0 + wt     // rad
+                startTheta -= gyroscopeReading[2] * dt           // theta = theta.0 + wt     // rad
 
                 timestamp = event.timestamp
 
                 if (accelerometerReading[2] >= (9.8 + 3.0) && stepCheck) {
                     stepCheck = false
 
-                    var x = startX + stepLength * cos(startTheta) * 100  //1 pixel = 0.01 m
-                    var y = startY + stepLength * sin(startTheta) * 100
+                    var x = startX + stepLength * cos(startTheta) * 50  //1 pixel = 0.02 m
+                    var y = startY + stepLength * sin(startTheta) * 50
 
-                    canvas.drawLine(startX, startY, x, y, paint)
-                    canvas.drawPoint(x, y, paintPoint)
+                    canvas.drawLine(startX, startY, x.toFloat(), y.toFloat(), paint)
+                    canvas.drawPoint(x.toFloat(), y.toFloat(), paintPoint)
                     // set bitmap as background to ImageView
                     view_image.background = BitmapDrawable(getResources(), bitmap)
 
-                    startX = x
-                    startY = y
+                    startX = x.toFloat()
+                    startY = y.toFloat()
 
                     Handler().postDelayed({ stepCheck = true }, 500)
                 }
