@@ -172,6 +172,7 @@ class OperatingActivity: Activity(), SensorEventListener {
                 }
 
                 Log.d("dt.", dt.toString())
+                Log.d("theta", startTheta.toString())
 
             }
             timestamp = event.timestamp
