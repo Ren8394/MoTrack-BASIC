@@ -58,10 +58,9 @@ class OperatingActivity: Activity(), SensorEventListener {
 
     private var startCheck: Boolean = true                   // Use to check weather the button is first click or not
     private var startTime:Long = System.currentTimeMillis()  // T.0
-    private var startV = 0.0f                                // V.0
     private var startTheta = 0.0f                            // theta.
-    private var displacement = 0.0f                          // X.0
     private var startAzimuth = 0.0f
+    private val stepLength = 0.8f
     private var stepCheck:Boolean = true
 
     private final val NS2S = 1.0f / 1000000000.0f
@@ -148,50 +147,37 @@ class OperatingActivity: Activity(), SensorEventListener {
         updateOrientationAngles()
 
         if (!startCheck) {
-            var eventTime = System.currentTimeMillis()
-            var dt: Float = (eventTime - startTime) * (1 / 100000f)
+            if (timestamp != 0L) {
+                var dt = (event.timestamp - timestamp) * NS2S
 
-            var aRMS = sqrt(accelerometerReading[1] * accelerometerReading[1])
+                startTheta += gyroscopeReading[2] * dt           // theta = theta.0 + wt     // rad
 
-            var dx = (startV * dt) + (1/2) * aRMS * dt * dt     // dx = V.0t + (1/2)at^2    // m
-            displacement += dx
-            startV += aRMS * dt                                 // V = V.0 + at             // m/s
+                timestamp = event.timestamp
 
-            //var eventAzimuth = (toDegrees(orientationAngles[0].toDouble()) + 360).toFloat() % 360
-            //var thetaChange = ((eventAzimuth - startAzimuth) / 2 / PI) * 0.000 + gyroscopeReading[2] * dt * 1.0
-            startTheta += gyroscopeReading[2] * dt              // theta = theta.0 + wt     // rad
-            //startTheta += thetaChange.toFloat()
+                if (accelerometerReading[2] >= (9.8 + 3.0) && stepCheck) {
+                    stepCheck = false
 
-            startTime = eventTime
+                    var x = startX + stepLength * cos(startTheta) * 100  //1 pixel = 0.01 m
+                    var y = startY + stepLength * sin(startTheta) * 100
 
-            if (accelerometerReading[2] >= (9.8 + 3.0) && stepCheck) {
-                stepCheck = false
+                    canvas.drawLine(startX, startY, x, y, paint)
+                    canvas.drawPoint(x, y, paintPoint)
+                    // set bitmap as background to ImageView
+                    view_image.background = BitmapDrawable(getResources(), bitmap)
 
-                var x = startX + displacement * cos(startTheta) * 10000               //1 pixel = 0.01 cm
-                var y = startY + displacement * sin(startTheta) * 10000
+                    startX = x
+                    startY = y
 
+                    Handler().postDelayed({ stepCheck = true }, 500)
+                }
 
-                canvas.drawLine(startX, startY, x, y, paint)
-                canvas.drawPoint(x, y, paintPoint)
-                // set bitmap as background to ImageView
-                view_image.background = BitmapDrawable(getResources(), bitmap)
+                Log.d("dt.", dt.toString())
 
-                displacement = 0f
-                startX = x
-                startY = y
-                startTheta = 0f
-
-                Handler().postDelayed({stepCheck = true}, 500)
             }
+            timestamp = event.timestamp
 
-            //Log.d("1.", gyroscopeReading[2].toString())
+            Log.d("gyro.", gyroscopeReading[2].toString())
         }
-
-        //Log.d("2.", rotationMatrix[1].toString())
-        //Log.d("3.", startY.toString())
-
-
-
     }
 
     override fun onResume() {
@@ -219,30 +205,3 @@ class OperatingActivity: Activity(), SensorEventListener {
     }
 
 }
-
-
-//if (timestamp != 0L) {
-//    var dt = (event.timestamp - timestamp) * NS2S
-//    var axisX = gyroscopeReading[0]
-//    var axisY = gyroscopeReading[1]
-//    var axisZ = gyroscopeReading[2]
-//
-//    var omegaMagnitude = sqrt(axisX*axisX + axisY*axisY + axisZ*axisZ)
-//
-//    if (omegaMagnitude > EPSILON) {
-//        axisX /= omegaMagnitude
-//        axisY /= omegaMagnitude
-//        axisZ /= omegaMagnitude
-//    }
-//
-//    var thetaOverTwo = omegaMagnitude * dt / 2.0f
-//    var sinThetaOverTwo = sin(thetaOverTwo)
-//    var cosThetaOverTwo = cos(thetaOverTwo)
-//    deltaRotationVector[0] = sinThetaOverTwo * axisX
-//    deltaRotationVector[1] = sinThetaOverTwo * axisY
-//    deltaRotationVector[2] = sinThetaOverTwo * axisZ
-//    deltaRotationVector[3] = cosThetaOverTwo
-//}
-//timestamp = event.timestamp
-//var deltaRotationMatrix = FloatArray(9)
-//SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector)
