@@ -60,7 +60,7 @@ class OperatingActivity: Activity(), SensorEventListener {
     private var startTime:Long = System.currentTimeMillis()  // T.0
     private var startTheta = -PI/2                           // theta.0
     private var startAzimuth = 0.0f
-    private val stepLength = 0.8f
+    private val stepLength = 0.6f
     private var stepCheck:Boolean = true
 
     private final val NS2S = 1.0f / 1000000000.0f
@@ -109,7 +109,7 @@ class OperatingActivity: Activity(), SensorEventListener {
                 startAndEnd_button.text = "End"
                 startCheck = false
                 startTime = System.currentTimeMillis()    // Assign T.0
-                startAzimuth = (toDegrees(orientationAngles[0].toDouble()) + 360).toFloat() % 360
+                startAzimuth = orientationAngles[0]
             } else {
                 startCheck = true
                 startAndEnd_button.isClickable = false
@@ -149,6 +149,8 @@ class OperatingActivity: Activity(), SensorEventListener {
         if (!startCheck) {
             if (timestamp != 0L) {
                 var dt = (event.timestamp - timestamp) * NS2S
+                var dTheta = gyroscopeReading[2] * dt
+                var dAzimuth = orientationAngles[0] - startAzimuth
 
                 startTheta -= gyroscopeReading[2] * dt           // theta = theta.0 + wt     // rad
 
@@ -206,3 +208,5 @@ class OperatingActivity: Activity(), SensorEventListener {
     }
 
 }
+
+//(toDegrees(orientationAngles[0].toDouble()) + 360).toFloat() % 360
