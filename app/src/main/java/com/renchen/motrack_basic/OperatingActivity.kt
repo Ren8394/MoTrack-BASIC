@@ -209,4 +209,4 @@ class OperatingActivity: Activity(), SensorEventListener {
 
 }
 
-//(toDegrees(orientationAngles[0].toDouble()) + 360).toFloat() % 360
+// (toDegrees(orientationAngles[0].toDouble()) + 360).toFloat() % 360
