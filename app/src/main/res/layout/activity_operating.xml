@@ -6,7 +6,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		tools:context=".OperatingActivity"
-		android:background="@android:color/background_dark">
+		android:background="@android:color/black">
 
 	<TextView
 			android:id="@+id/test_Text"
@@ -17,7 +17,8 @@
 			android:layout_marginTop="@dimen/layout_margin"
 			android:text="TEST"
 			android:textSize="36sp"
-			android:textColor="@android:color/holo_orange_light"
+			android:textColor="@android:color/holo_green_dark"
+			android:visibility="gone"
 	/>
 
 	<Button
@@ -32,5 +33,10 @@
 			android:textAllCaps="true"
 			android:textStyle="bold"
 	/>
+
+	<ImageView
+			android:id="@+id/view_image"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"/>
 
 </android.support.constraint.ConstraintLayout>
